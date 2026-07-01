@@ -1,0 +1,41 @@
+name: gemmaedge
+description: "An offline AI tutor app for Indian students using Gemma 2-2B models"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  flutter_markdown: ^0.7.4
+  flutter_math_fork: ^0.7.2
+  flutter_highlight: ^0.7.0
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.0
+  shared_preferences: ^2.3.3
+  google_mlkit_text_recognition: ^0.14.0
+  speech_to_text: ^7.0.0
+  flutter_tts: ^4.2.0
+  flutter_secure_storage: ^9.2.2
+  sqflite: ^2.4.1
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.1
+  share_plus: ^10.1.2
+  image_picker: ^1.1.2
+  file_picker: ^8.1.4
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/models/

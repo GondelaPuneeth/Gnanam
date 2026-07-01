@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(mkdir *)",
+      "PowerShell(flutter pub *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(Get-ChildItem *)"
+    ]
+  }
+}
