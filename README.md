@@ -1,101 +1,94 @@
-# GemmaEdge
+# Gnanam
 
-An offline AI tutor app for Indian students (grades 1-12) using on-device Gemma 2-2B GGUF models via the `llama_cpp_dart` package.
+An intelligent, offline-first AI tutor application built for Indian students (grades 1-12) leveraging powerful on-device AI inference using Google's Gemma models via the `flutter_gemma` package.
 
-## Features
+**"Gnanam"** translates to "Knowledge", and the app acts as a personalized, privacy-first companion that tailors educational content to the student's level.
 
-- **Offline First**: Works completely without internet connection
-- **Grade Adaptive**: Tailored content for Spark (1-4), Scholar (5-8), and Sage (9-12) tiers
-- **Beautiful UI**: Premium chat interface with Material 3 design
-- **Math Rendering**: LaTeX equations with `flutter_math_fork`
-- **Markdown Support**: Rich text formatting with custom markdown rendering
-- **Code Highlighting**: Syntax highlighting for multiple programming languages
-- **Voice Input**: Speech-to-text capabilities
-- **OCR**: Text recognition from images
+## ✨ Key Features
 
-## Tech Stack
+- **🧠 Offline On-Device AI**: Runs Gemma AI models entirely on your phone's hardware. Zero internet required after the initial setup. 100% privacy.
+- **📚 Grade Adaptive Tiers**: Automatically adjusts the AI persona and difficulty based on the student's grade:
+  - 🌟 **Spark** (Grades 1-4)
+  - 🎓 **Scholar** (Grades 5-8)
+  - 🦉 **Sage** (Grades 9-12)
+- **💬 Conversational UI**: Premium chat interface with typing animations, beautiful message bubbles, and Material 3 design.
+- **📝 Smart Markdown & Math**: Renders LaTeX equations natively with `flutter_math_fork` and parses complex markdown and code blocks.
+- **📊 Progress Dashboard**: Track streaks, accuracy, study time, and mastery across different subjects.
+- **📜 Chat History**: Automatically saves your sessions and allows you to bookmark important lessons for later review.
+- **🎯 Interactive Quizzes**: The AI generates dynamic multiple-choice quizzes on the fly for any subject and grades them instantly!
 
-- Flutter 3.x
-- Dart
-- Material 3
-- Riverpod for state management
-- llama_cpp_dart for model inference
+## 🛠️ Tech Stack
 
-## Screens
+- **Framework**: Flutter 3.x & Dart
+- **AI Inference**: `flutter_gemma`
+- **State Management**: Riverpod (`flutter_riverpod`)
+- **Local Storage**: `sqflite` for chat history and progress tracking, `shared_preferences` for settings
+- **Design System**: Material 3
 
-1. **Splash Screen**: Loading indicator while model initializes
-2. **Onboarding**: Introduction to app features
-3. **Grade Selection**: Choose your grade level
-4. **Home/Chat**: Main chat interface with AI tutor
-5. **Drawer Menu**: Navigation to other sections
-6. **Settings**: App configuration
+## 📱 App Architecture & Screens
 
-## UI Components
+1. **Splash Screen**: Validates the presence of the on-device Gemma model, activates it, and prepares the `LlmService`.
+2. **Onboarding**: Explains the offline nature and features of the app to new users.
+3. **Grade Selection**: Sets the user's tier (Spark/Scholar/Sage) and initializes the specialized AI system prompt.
+4. **Home (Chat Screen)**: The primary workspace for interacting with the AI tutor.
+5. **Chat History**: Browse past sessions, grouped by date, with swipe-to-delete and bookmarking functionality.
+6. **Progress Screen**: A comprehensive dashboard showing study streaks, subject-wise mastery, and a visual activity chart.
+7. **Quiz Screen & Results**: A specialized flow for taking AI-generated practice tests and reviewing performance.
+8. **Settings**: Hardware configuration, UI scaling, and cache management.
 
-- Custom markdown rendering with LaTeX support
-- Streaming token animation
-- Beautiful message bubbles
-- Responsive design for Android phones (4-6 GB RAM)
+## 🚀 Getting Started
 
-## Installation
+### Prerequisites
+- Flutter SDK (3.x)
+- Android Studio / Android SDK (API 26+)
+- A physical Android device with at least 4-6GB of RAM (Recommended for on-device AI)
 
-1. Clone the repository
-2. Run `flutter pub get`
-3. Connect an Android device or start an emulator
-4. Run `flutter run`
+### Installation
 
-## Dependencies
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/GondelaPuneeth/Gnanam.git
+   cd Gnanam
+   ```
 
-All dependencies are listed in `pubspec.yaml`:
+2. **Fetch Dependencies**
+   ```bash
+   flutter pub get
+   ```
 
-- flutter_riverpod: ^2.6.1
-- flutter_markdown: ^0.7.4
-- flutter_math_fork: ^0.7.2
-- flutter_highlight: ^0.7.0
-- google_fonts: ^6.2.1
-- flutter_animate: ^4.5.0
-- shared_preferences: ^2.3.3
-- And more...
+3. **Run the App**
+   Connect your Android device via USB (with Developer Mode and USB Debugging enabled) and run:
+   ```bash
+   flutter run
+   ```
 
-## Project Structure
+> **Note on Initial Setup**: The app requires the Gemma GGUF model to function. The `flutter_gemma` setup handles loading the model. Ensure your device has enough storage space to accommodate the model file.
 
-```
+## 🗂️ Project Structure
+
+```text
 lib/
-├── app.dart
-├── main.dart
-├── models/
-│   └── chat_message.dart
-├── providers/
-│   ├── grade_provider.dart
-│   └── theme_provider.dart
-├── screens/
-│   ├── drawer_menu.dart
-│   ├── grade_selection_screen.dart
-│   ├── home_screen.dart
-│   ├── onboarding_screen.dart
-│   ├── settings_screen.dart
-│   └── splash_screen.dart
-├── theme/
-│   ├── app_theme.dart
-│   └── theme_notifier.dart
-└── widgets/
-    ├── chat_message.dart
-    └── custom_markdown.dart
+├── core/
+│   ├── database/         # SQLite schema and data access
+│   ├── security/         # Local data protection
+│   └── errors/           # Exception handling
+├── features/
+│   ├── quiz/             # Quiz generation logic
+│   └── vision/           # Camera sensing features
+├── inference/
+│   ├── llm_service.dart  # Core integration with flutter_gemma
+│   └── chat_controller.dart
+├── orchestrator/
+│   └── agent_manager.dart # Task routing and intent classification
+├── providers/            # Riverpod state management
+├── screens/              # UI Views
+├── theme/                # Material 3 styling
+└── widgets/              # Reusable UI components (custom markdown, chat bubbles)
 ```
 
-## Development
+## 🛡️ Privacy by Design
 
-This is the LITE version — pure Dart, no NDK, no C++ custom code.
-
-## Requirements
-
-- Android API 26+ (Android 8+)
-- Minimum 4GB RAM device recommended
-
-## Future Enhancements
-
-- Integration with actual llama_cpp_dart model
-- Advanced OCR capabilities
-- Progress tracking and analytics
-- Practice tests and quizzes
-- Saved lessons and bookmarks
+Gnanam was built with student privacy as the #1 priority. Because all AI inference happens **on-device**:
+- No chat logs are ever sent to the cloud.
+- No PII (Personally Identifiable Information) leaves the phone.
+- The app requires absolutely no internet connection to answer questions.
