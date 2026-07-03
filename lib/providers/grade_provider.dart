@@ -1,9 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError();
-});
+import 'package:gnanam/theme/theme_notifier.dart';
 
 class GradeNotifier extends StateNotifier<int?> {
   final SharedPreferences _prefs;

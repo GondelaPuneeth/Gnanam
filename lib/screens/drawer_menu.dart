@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gemma_edge/providers/grade_provider.dart';
-import 'package:gemma_edge/providers/theme_provider.dart';
-import 'package:gemma_edge/theme/app_theme.dart';
+import 'package:gnanam/providers/grade_provider.dart';
+import 'package:gnanam/providers/theme_provider.dart';
+import 'package:gnanam/providers/settings_provider.dart';
+import 'package:gnanam/theme/app_theme.dart';
+import 'package:gnanam/screens/chat_history_screen.dart';
+import 'package:gnanam/screens/progress_screen.dart';
+import 'package:gnanam/screens/quiz_screen.dart';
+import 'package:gnanam/features/quiz/quiz_generator.dart';
 
 class DrawerMenu extends ConsumerWidget {
   const DrawerMenu({super.key});
@@ -11,13 +16,15 @@ class DrawerMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final grade = ref.watch(gradeProvider) ?? 1;
     final primaryColor = AppTheme.getPrimaryColorForGrade(grade);
+    final settings = ref.watch(settingsProvider);
+    final theme = Theme.of(context);
 
     return Drawer(
       child: Column(
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,9 +43,9 @@ class DrawerMenu extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Student Name',
-                  style: TextStyle(
+                Text(
+                  settings.studentName,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -58,6 +65,10 @@ class DrawerMenu extends ConsumerWidget {
             title: const Text('Chat History'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ChatHistoryScreen()),
+              );
             },
           ),
           ListTile(
@@ -65,6 +76,10 @@ class DrawerMenu extends ConsumerWidget {
             title: const Text('Saved Lessons'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ChatHistoryScreen(bookmarkedOnly: true)),
+              );
             },
           ),
           ListTile(
@@ -72,6 +87,10 @@ class DrawerMenu extends ConsumerWidget {
             title: const Text('My Progress'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProgressScreen()),
+              );
             },
           ),
           ListTile(
@@ -79,6 +98,7 @@ class DrawerMenu extends ConsumerWidget {
             title: const Text('Practice Tests'),
             onTap: () {
               Navigator.pop(context);
+              _showQuizDialog(context, ref, grade);
             },
           ),
           const Divider(),
@@ -95,6 +115,16 @@ class DrawerMenu extends ConsumerWidget {
             title: const Text('About'),
             onTap: () {
               Navigator.pop(context);
+              showAboutDialog(
+                context: context,
+                applicationName: 'Gnanam',
+                applicationVersion: '1.0.0',
+                applicationLegalese: '© 2025 Gnanam AI Tutor\nAll learning happens on-device.',
+                children: [
+                  const SizedBox(height: 16),
+                  const Text('An offline AI tutor for Indian students, powered by Gemma 2.'),
+                ],
+              );
             },
           ),
           const Spacer(),
@@ -126,6 +156,106 @@ class DrawerMenu extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showQuizDialog(BuildContext context, WidgetRef ref, int grade) {
+    String selectedSubject = 'Math';
+    final topicController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          title: const Text('Generate Quiz'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: selectedSubject,
+                decoration: const InputDecoration(
+                  labelText: 'Subject',
+                  border: OutlineInputBorder(),
+                ),
+                items: ['Math', 'Science', 'English', 'History', 'Social Science']
+                    .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                    .toList(),
+                onChanged: (v) => setState(() => selectedSubject = v ?? 'Math'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: topicController,
+                decoration: const InputDecoration(
+                  labelText: 'Topic',
+                  hintText: 'e.g., Fractions, Photosynthesis...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            FilledButton.icon(
+              onPressed: () async {
+                if (topicController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a topic')),
+                  );
+                  return;
+                }
+                Navigator.pop(ctx);
+
+                // Show loading
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text('Generating quiz...'),
+                        SizedBox(height: 4),
+                        Text('This may take a moment', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                );
+
+                try {
+                  final generator = ref.read(quizGeneratorProvider);
+                  final quiz = await generator.generateQuiz(
+                    subject: selectedSubject,
+                    topic: topicController.text.trim(),
+                    grade: grade,
+                  );
+
+                  if (context.mounted) {
+                    Navigator.pop(context); // Close loading
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => QuizScreen(quiz: quiz)),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context); // Close loading
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to generate quiz: $e')),
+                    );
+                  }
+                }
+              },
+              icon: const Icon(Icons.auto_awesome),
+              label: const Text('Generate'),
+            ),
+          ],
+        ),
       ),
     );
   }

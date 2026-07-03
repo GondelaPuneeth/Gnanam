@@ -5,15 +5,22 @@ import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class CustomMarkdownWidget extends StatelessWidget {
   final String data;
+  final Color? textColor;
 
-  const CustomMarkdownWidget({super.key, required this.data});
+  const CustomMarkdownWidget({
+    super.key,
+    required this.data,
+    this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     final processedData = _processMath(data);
+    final baseColor = textColor ?? Theme.of(context).colorScheme.onSurface;
 
     return MarkdownBody(
       data: processedData,
@@ -34,13 +41,13 @@ class CustomMarkdownWidget extends StatelessWidget {
           height: 1.3,
         ),
         h2Padding: const EdgeInsets.only(top: 20, bottom: 10),
-        h3: TextStyle(
+        h3: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           height: 1.3,
         ),
         h3Padding: const EdgeInsets.only(top: 16, bottom: 8),
-        h4: TextStyle(
+        h4: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           height: 1.3,
@@ -51,7 +58,7 @@ class CustomMarkdownWidget extends StatelessWidget {
           fontSize: 15,
           fontWeight: FontWeight.w400,
           height: 1.6,
-          color: Theme.of(context).colorScheme.onSurface,
+          color: baseColor,
         ),
         pPadding: const EdgeInsets.only(bottom: 12),
         // Lists
@@ -59,18 +66,18 @@ class CustomMarkdownWidget extends StatelessWidget {
           fontSize: 15,
           fontWeight: FontWeight.w400,
           height: 1.5,
-          color: Theme.of(context).colorScheme.onSurface,
+          color: baseColor,
         ),
         listBulletPadding: const EdgeInsets.only(left: 16),
         // Blockquotes
         blockquote: TextStyle(
           fontSize: 15,
           fontStyle: FontStyle.italic,
-          color: Theme.of(context).colorScheme.onSurface,
+          color: baseColor,
           height: 1.5,
         ),
         blockquoteDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
           border: Border(
             left: BorderSide(
               color: Theme.of(context).colorScheme.primary,
@@ -85,25 +92,25 @@ class CustomMarkdownWidget extends StatelessWidget {
           fontFamily: 'monospace',
           fontSize: 14,
           color: Theme.of(context).colorScheme.onSurface,
-          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
         codeblockPadding: const EdgeInsets.all(12),
         codeblockDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
         ),
       ),
       builders: {
-        'math-inline': MathInlineBuilder(),
-        'math-block': MathBlockBuilder(),
+        'math_inline': MathInlineBuilder(),
+        'math_block': MathBlockBuilder(),
         'code': CodeElementBuilder(
           darkTheme: atomOneDarkTheme,
           lightTheme: atomOneLightTheme,
         ),
       },
-      syntaxExtensions: const [
-        SyntaxExtension.inline('math-inline', r'\$(.*?)\$'),
-        SyntaxExtension.block('math-block', r'\$\$(.*?)\$\$'),
+      inlineSyntaxes: [
+        MathBlockSyntax(),
+        MathInlineSyntax(),
       ],
       onTapLink: (text, href, title) async {
         if (href != null) {
@@ -130,14 +137,14 @@ class MathInlineBuilder extends MarkdownElementBuilder {
       return Math.tex(
         text,
         mathStyle: MathStyle.text,
-        textStyle: preferredStyle?.copyWith(fontSize: (preferredStyle?.fontSize ?? 15) * 1.05),
+        textStyle: preferredStyle?.copyWith(fontSize: (preferredStyle.fontSize ?? 15) * 1.05),
       );
     } catch (e) {
       // Fallback to monospace text with red border if LaTeX parsing fails
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.red.withOpacity(0.5)),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
@@ -164,7 +171,7 @@ class MathBlockBuilder extends MarkdownElementBuilder {
           child: Math.tex(
             text,
             mathStyle: MathStyle.display,
-            textStyle: preferredStyle?.copyWith(fontSize: (preferredStyle?.fontSize ?? 15) * 1.05),
+            textStyle: preferredStyle?.copyWith(fontSize: (preferredStyle.fontSize ?? 15) * 1.05),
           ),
         ),
       );
@@ -175,7 +182,7 @@ class MathBlockBuilder extends MarkdownElementBuilder {
         padding: const EdgeInsets.all(12),
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.red.withOpacity(0.5)),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -252,7 +259,7 @@ class _CodeHighlightWidgetState extends State<CodeHighlightWidget> {
             : const Color(0xFFFAFAFA),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
         ),
       ),
       child: Stack(
@@ -265,7 +272,7 @@ class _CodeHighlightWidgetState extends State<CodeHighlightWidget> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -286,7 +293,7 @@ class _CodeHighlightWidgetState extends State<CodeHighlightWidget> {
               icon: Icon(
                 _copied ? Icons.check_outlined : Icons.content_copy_outlined,
                 size: 18,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               onPressed: () {
                 // Copy to clipboard
@@ -323,5 +330,25 @@ class _CodeHighlightWidgetState extends State<CodeHighlightWidget> {
         ],
       ),
     );
+  }
+}
+
+class MathBlockSyntax extends md.InlineSyntax {
+  MathBlockSyntax() : super(r'\$\$(.*?)\$\$');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.text('math_block', match[1]!));
+    return true;
+  }
+}
+
+class MathInlineSyntax extends md.InlineSyntax {
+  MathInlineSyntax() : super(r'\$(.*?)\$');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.text('math_inline', match[1]!));
+    return true;
   }
 }

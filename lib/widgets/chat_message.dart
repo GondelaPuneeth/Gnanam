@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:gemma_edge/models/chat_message.dart';
-import 'package:gemma_edge/theme/app_theme.dart';
-import 'package:gemma_edge/widgets/custom_markdown.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:gnanam/inference/chat_controller.dart';
+import 'package:gnanam/widgets/custom_markdown.dart';
 
 class ChatMessageWidget extends StatefulWidget {
   final ChatMessage message;
@@ -77,7 +75,7 @@ class _ChatMessageWidgetState extends State<ChatMessageWidget> {
                   _formatTime(widget.message.timestamp),
                   style: TextStyle(
                     fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -105,7 +103,12 @@ class _ChatMessageWidgetState extends State<ChatMessageWidget> {
         padding: const EdgeInsets.all(16),
         child: widget.message.isStreaming
             ? _buildStreamingMessage()
-            : CustomMarkdownWidget(data: widget.message.text),
+            : CustomMarkdownWidget(
+                data: widget.message.content,
+                textColor: widget.message.isUser
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : null,
+              ),
       ),
     ).animate().fadeIn(duration: 250.ms).slideY(begin: 0.1, end: 0);
   }
@@ -115,7 +118,7 @@ class _ChatMessageWidgetState extends State<ChatMessageWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: CustomMarkdownWidget(data: widget.message.text),
+          child: CustomMarkdownWidget(data: widget.message.content),
         ),
         const SizedBox(width: 4),
         Text(

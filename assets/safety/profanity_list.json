@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "note": "Grade-aware profanity filter. Spark tier (1-4) has strictest filtering, Sage (9-12) is slightly more relaxed for academic context.",
+  "universal_block": [
+    "fuck", "shit", "bitch", "asshole", "damn", "bastard", "dick", "pussy", "crap",
+    "wtf", "stfu", "lmao", "af", "bs",
+    "chutiya", "madarchod", "behenchod", "gaand", "saala", "haramkhor", "kamina"
+  ],
+  "spark_additional_block": [
+    "stupid", "idiot", "dumb", "shut up", "hate you", "loser", "ugly", "fat"
+  ],
+  "replacement": "***"
+}

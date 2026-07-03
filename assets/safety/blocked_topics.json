@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "blocked_categories": [
+    {
+      "category": "violence",
+      "keywords": ["kill", "murder", "weapon", "gun", "knife", "attack", "fight", "hurt", "harm", "blood", "gore", "torture", "abuse"],
+      "severity": "high",
+      "response": "I'm sorry, I can only help with educational topics. Let's focus on your studies! 📚"
+    },
+    {
+      "category": "adult_content",
+      "keywords": ["sex", "nude", "porn", "xxx", "naked", "explicit"],
+      "severity": "high",
+      "response": "I'm your study buddy and can only help with school subjects. What topic would you like to learn about?"
+    },
+    {
+      "category": "drugs",
+      "keywords": ["drug", "cocaine", "heroin", "meth", "marijuana", "weed", "smoking", "alcohol", "beer", "wine", "drunk"],
+      "severity": "high",
+      "response": "I'm designed to help with your studies. Would you like to explore a Science or Health topic instead?"
+    },
+    {
+      "category": "self_harm",
+      "keywords": ["suicide", "self-harm", "cut myself", "kill myself", "end my life", "want to die"],
+      "severity": "critical",
+      "response": "I care about you. If you're feeling this way, please talk to a trusted adult — a parent, teacher, or school counselor. You can also call iCall (9152987821) or Vandrevala Foundation helpline (1860-2662-345). You matter. 💙"
+    },
+    {
+      "category": "hate_speech",
+      "keywords": ["racist", "hate", "terrorist", "caste", "untouchable", "slur"],
+      "severity": "high",
+      "response": "Let's keep our conversation respectful and focused on learning. Every person deserves dignity. What subject can I help you with?"
+    },
+    {
+      "category": "personal_info",
+      "keywords": ["my address", "my phone number", "my password", "credit card", "bank account", "aadhaar", "pan card"],
+      "severity": "medium",
+      "response": "For your safety, please don't share personal information with me. I don't need it to help you study! What topic shall we work on?"
+    }
+  ]
+}

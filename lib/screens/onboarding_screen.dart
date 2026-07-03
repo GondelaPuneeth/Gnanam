@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:gemma_edge/screens/grade_selection_screen.dart';
+import 'package:gnanam/screens/grade_selection_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -37,14 +37,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 context,
                 title: 'Learn offline, anytime',
                 description:
-                    'No internet? No problem. GemmaEdge works completely offline so you can study anywhere.',
+                    'No internet? No problem. Gnanam works completely offline so you can study anywhere.',
                 illustration: Icons.wifi_off_outlined,
               ),
               _buildOnboardingPage(
                 context,
                 title: 'Your AI tutor adapts to your grade',
                 description:
-                    'Whether you\'re in primary, middle, or high school, GemmaEdge tailors explanations to your level.',
+                    'Whether you\'re in primary, middle, or high school, Gnanam tailors explanations to your level.',
                 illustration: Icons.school_outlined,
               ),
               _buildOnboardingPage(
